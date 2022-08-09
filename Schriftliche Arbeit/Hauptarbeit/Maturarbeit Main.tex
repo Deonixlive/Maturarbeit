@@ -1,0 +1,455 @@
+\documentclass[a4paper,titlepage]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage[ngerman]{babel}
+\geometry{a4paper,left=20mm,right=20mm,top=4cm,bottom=4cm}
+\usepackage{graphicx}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{multirow}
+\usepackage{csquotes}
+\usepackage{notation}
+\usepackage{parskip}
+
+%\usepackage[document]{ragged2e}
+\usepackage[style=numeric,
+		backend=biber,
+		sorting=none]{biblatex}
+
+\addbibresource{quellen/quellen.bib}
+\addbibresource{quellen/AtariRLquellen.bib}
+%\addbibresource{quellen/NIPS-2016-deep-exploration-via-bootstrapped-dqn-Bibtex.bib}
+
+\numberwithin{equation}{section} %Nummeriert mathematische Umgebungen nach sections durch
+\usepackage[nodisplayskipstretch]{setspace} %lässt Abstand zwischen align-Umgebungen und Text auf 1.0
+\setstretch{1.5}% ergibt 1,5-fachen Zeilenabstand
+
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist
+
+
+\newenvironment{stretchpars}
+{\par\setlength{\parfillskip}{0pt}}
+{\par}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\begin{titlepage}
+
+\begin{center}
+
+\end{center}
+\vspace{2.5cm}
+\begin{center}
+        {\Large\scshape Maturarbeit}\\*[5mm]
+				%{\Large\scshape M.Sc.-Studiengang "`Actuarial Science"'}\\*[5mm]
+        {\bf\Large\scshape Neuronale Netze in\\ unbekannten Umgebungen}\\*[12mm]
+\end{center}
+\vspace{4,5cm}
+\newcommand{\titleleftmargin}{20mm}
+\begin{tabbing}
+       \hspace{\titleleftmargin}eingereicht von:		\hspace{6.5cm}\=			betreut von:\\
+       \hspace{\titleleftmargin}\bf{Dimetri Chau} 								\> \bf{Bernhard Pfammatter}\\
+       \hspace{\titleleftmargin}\textbf{Gstaltenrainweg 61}						\> Abgabedatum, Ort: \\
+       \hspace{\titleleftmargin}\textbf{4125 Riehen}		   					\> \textbf{01.08.2022, Riehen}   \\*[2mm]
+       \hspace{\titleleftmargin}Telefon: 076 306 39 90 \\*[2mm]
+       \hspace{\titleleftmargin}Email: dimetri.chau@stud.unibas.ch\\*[2mm]
+\end{tabbing}
+\end{titlepage}
+
+
+\newpage
+\setcounter{page}{1}
+%\section*{Abstract}
+%\addcontentsline{toc}{section}{Abstract}
+%[TODO ABSTRACT]
+%\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\thispagestyle{empty}
+%\pagenumbering{Roman}
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\tableofcontents
+
+\newpage
+
+\addcontentsline{toc}{section}{Abbildungsverzeichnis}
+\listoffigures
+\newpage
+
+\addcontentsline{toc}{section}{Tabellenverzeichnis}
+\listoftables
+\newpage
+
+\section*{Abkürzungsverzeichnis}
+
+\addcontentsline{toc}{section}{Abkürzungsverzeichnis}
+\newpage
+
+\section*{Symbolverzeichnis}
+\addcontentsline{toc}{section}{Symbolverzeichnis}
+\>$\defeq$            \> Gleichung die per Definition wahr ist.\\
+\>$\approx$           \> schätzungsweise gleich.\\
+\>$\propto$           \> proportional zu.\\
+\>$\Pr{X\!=\!x}$      \> die Wahrscheinlichkeit dass eine Zufallsvariable gleich $x$ ist.\\
+\>$X\sim p$           \> eine Zufallsvariable $X$, gewählt mit der Verteilung $p(x)\defeq\Pr{X\!=\!x}$.\\
+\>$\E{X}$             \> der Erwartungswert von einer Zufallsvariable $X$, so dass $\E{X}\defeq\sum_x p(x)x$.\\
+\>$\arg\max_a f(a)$   \> ein Wert $a$, so dass $f(a)$ den Maximalwert erreicht.\\
+\>$\ln x$             \> der natürliche Logarithmus von $x$.\\
+\>$e^x$               \> die Basis des natürlichen Logarithmus, $e\approx 2.71828$, hoch $x$; $e^{\ln x}=x$.\\
+\>$\Re$               \> die Menge der reellen Zahlen.\\
+\>$f:\X\rightarrow\Y$ \> die Funktion $f$ von den Elementen aus der Menge $\X$ zu den Elementen aus der Menge $\Y$.\\
+\>$\leftarrow$        \> eine Zuordnung.\\
+\>$(a,b]$             \> das reelle Intervall zwischen $a$ und $b$ inklusive $b$ aber exklusive $a$.\\
+\\
+\>$\e$                \> die Wahrscheinlichkeit eine zufällige Aktion zu nehmen in der \e-greedy Richtlinie.\\
+\>$\alpha, \beta$     \> Schrittgrössen-Parameter.\\
+\>$\gamma$            \> Diskontfaktor.\\
+%\>$\lambda$           \> decay-rate parameter for eligibility traces.\\
+
+\>In einem Markov Entscheidungs Prozess (MDP):\\
+\>$s, s'$             \> Zustände (eng. states).\\
+\>$a$                 \> eine Aktion (eng. action).\\
+\>$r$                 \> eine Belohnung (eng. reward).\\
+\>$\S$                \> die Menge aller nicht-terminale Zustände. \\
+\>$\S^+$              \> die Menge aller Zustände, inklusive terminale Zustände. \\
+\>$\A(s)$             \> die Menge aller verfügbaren Aktionen im Zustand $s$.\\
+\>$\R$                \> die Menge aller möglichen Belohnungen, eine endliche Teilmenge von $\Re$.\\
+\>$\subset$           \> die Teilmenge von; z.B., $\R\subset\Re$.\\
+\>$\in$               \> ist ein Element von; z.B., $s\in\S$, $r\in\R$.\\
+\>$|\S|$              \> die Zahl der Elemente in der Menge $\S$.\\
+\\
+\\
+\>$t$                 \> diskreter Zeitschritt\\
+\>$T, T(t)$           \> finaler Zeitschritt einer Episode. Zeitschritt von einer Episode mit dem Schritt $t$.\\
+\>$A_t$               \> Aktion zur Zeit $t$.\\
+\>$S_t$               \> Zustand zur Zeit $t$, typischerweise stochastisch auf $S_{t-1}$ und $A_{t-1}$ zurückzuführen.\\
+\>$R_t$               \> Belohnung zur Zeit $t$, typischerweise stochastisch auf $S_{t-1}$ und $A_{t-1}$ zurückzuführen.\\
+\>$\pi$               \> Richtlinie (eng. policy; entscheidet nach einer Regel)\\
+\>$\pi(s)$            \> getroffene Aktion $s$ unter der {\it deterministische\/} Richtlinie $\pi$.\\
+\>$\pi(a|s)$          \> die Wahrscheinlichkeit Aktion $a$ im Zustand $s$ zu treffen, unter der {\it stochastischen\/} Richtlinie $\pi$.\\
+\\
+\>$G_t$               \> die Gesamtbelohnung (eng. return) nach Zeit $t$.\\
+%\>$h$                 \> horizon, the time step one looks up to in a forward view\\
+\>$G_{t:t+n}, G_{t:h}$\> $n$-Schritt Gesamtbelohnung von $t+1$ zu $t+n$, oder zu to $h$. (diskontiert und korrigiert) \\
+\>$\bar G_{t:h}$      \> flache Gesamtbelohnung (undiskontiert und korrigiert) von $t+1$ zu $h$.\\
+%\>$G^\lambda_t$       \> $\lambda$-return\\
+%\>$G^\lambda_{t:h}$   \> truncated, corrected $\lambda$-return\\
+%\>$G^{\lambda s}_t$, $G^{\lambda a}_t$    \> $\lambda$-return, corrected by estimated state, or action, values \\
+\\
+\>$\p(s',r|s,a)$      \> die Übergangswahrscheinlichkeit zu Zustand $s'$ mit der Belohnung $r$,\\ vom Zustand $s$ unter der Aktion $a$.\\
+\>$\p(s'|s,a)$        \> die Übergangswahrscheinlichkeit zu Zustand $s'$ von Zustand $s$ \\unter der Aktion $a$.\\
+\>$r(s,a)$            \> erwartete unmittelbare Belohnung vom Zustand $s$ unter der Aktion $a$.\\
+\>$r(s,a,s')$         \> erwartete unmittelbare Belohnung vom Zustand $s$ zu $s'$ unter der Aktion $a$.\\
+\\
+\>$\vpi(s)$           \> Wert eines Zustandes $s$ unter der Richtlinie $\pi$ (erwartete Gesamtbelohnung).\\
+\>$\vstar(s)$         \> Wert eines Zustandes $s$ unter der optimalen Richtlinie. \\
+\>$\qpi(s,a)$         \> Wert einer Aktion $a$ im Zustand $s$ unter der Richtlinie $\pi$.\\
+\>$\qstar(s,a)$       \> Wert einer Aktion $a$ im Zustand $s$ unter der optimalen Richtlinie. \\
+\\
+%\>$V, V_t$            \> array estimates of state-value function $\vpi$ or $\vstar$\\
+%\>$Q, Q_t$            \> array estimates of action-value function $\qpi$ or $\qstar$\\
+\>$\bar V_t(s)$       \> erwartete geschätzte Aktionswert, z.B. $\bar V_t(s)\defeq\sum_a\pi(a|s)Q_{t}(s,a)$\\
+%\>$U_t$               \> target for estimate at time $t$\\
+\\
+\>$\delta_t$          \> temporal-difference (TD) error at $t$ (a random variable) \\
+\>$\delta^s_t, \delta^a_t$ \> state- and action-specific forms of the TD error \\
+\>$n$                 \> in $n$-Schritte Methoden, ist $n$ ist die Zahl der Schritte im Bootstrapping.\\
+\\
+\>$d$                 \> dimensionality---the number of components of $\w$\\
+\>$d'$                \> alternate dimensionality---the number of components of $\th$\\
+\>$\w,\w_t$           \> $d$-vector of weights underlying an approximate value function\\
+\>$w_i,w_{t,i}$ \> $i$th component of learnable weight vector\\
+\>$\hat v(s,\w)$      \> approximate value of state $s$ given weight vector $\w$\\
+\>$v_\w(s)$           \> alternate notation for $\hat v(s,\w)$\\
+\>$\hat q(s,a,\w)$    \> approximate value of state--action pair $s,a$ given weight vector $\w$\\
+\>$\grad \hat v(s,\w)$\> column vector of partial derivatives of $\hat v(s,\w)$ with respect to $\w$\\
+\>$\grad \hat q(s,a,\w)$\> column vector of partial derivatives of $\hat q(s,a,\w)$ with respect to $\w$\\
+\\
+\>$\x(s)$             \> vector of features visible when in state $s$\\
+\>$\x(s,a)$           \> vector of features visible when in state $s$ taking action $a$\\
+\>$x_i(s), x_i(s,a)$  \> $i$th component of vector $\x(s)$ or $\x(s, a)$\\
+\>$\x_t$              \> shorthand for $\x(S_t)$ or $\x(S_t,A_t)$\\
+\>$\w\tr\x$           \> inner product of vectors, $\w\tr\x\defeq\sum_i w_i x_i$; e.g., $\hat v(s,\w)\defeq\w\tr\x(s)$\\
+\>$\v,\v_t$           \> secondary $d$-vector of weights, used to learn $\w$ \\
+\>$\z_t$              \> $d$-vector of eligibility traces at time $t$ \\
+\\
+\>$\th, \th_t$        \> Parametervektor von der Zielrichtlinie. \\
+\>$\pi(a|s,\th)$      \> die Wahrscheinlichkeit Aktion $a$ im Zustand $s$ mit dem Parametervektor $\th$ zu treffen.\\
+\>$\pi_\th$           \> Richtlinie die $\th$ entspricht.\\
+\>$\grad\pi(a|s,\th)$ \>column vector of partial derivatives of $\pi(a|s,\th)$ with respect to $\th$\\
+\>$J(\th)$            \> performance measure for the policy $\pi_\th$\\
+\>$\grad J(\th)$      \> column vector of partial derivatives of $J(\th)$ with respect to $\th$\\
+\>$h(s,a,\th)$        \> preference for selecting action $a$ in state $s$ based on $\th$\\
+\\
+\>$b(a|s)$            \> behavior policy used to select actions while learning about target policy $\pi$ \\
+\>$b(s)$              \> a baseline function $b:\S\mapsto\Re$ for policy-gradient methods\\
+\>$b$                 \> branching factor for an MDP or search tree \\
+\>$\rho_{t:h}$        \> importance sampling ratio for time $t$ through time $h$ \\
+\>$\rho_{t}$          \> importance sampling ratio for time $t$ alone, $\rho_t\defeq\rho_{t:t}$\\
+\>$r(\pi)$            \> average reward (reward rate) for policy $\pi$ \\
+\>$\bar R_t$          \> estimate of $r(\pi)$ at time $t$\\
+\\
+\>$\mu(s)$            \> on-policy distribution over states \\
+\>$\bm\mu$            \> $|\S|$-vector of the $\mu(s)$ for all $s\in\S$\\
+\>$\norm{v}$          \> $\mu$-weighted squared norm of value function $v$, i.e., $\norm{v}\defeq\sum_{s\in\S} \mu(s)v(s)^2$\\
+\>$\eta(s)$           \> expected number of visits to state $s$ per episode\\
+\>$\Pi$               \> projection operator for value functions \\
+\>$B_\pi$             \> Bellman operator for value functions \\
+\\
+\>${\bf A}$           \> $d\times d$ matrix ${\bf A}\defeq\E{\x_t\bigl(\x_t-\g\x_{t+1}\bigr)\tr}$\\
+\>${\bf b}$           \> $d$-dimensional vector ${\bf b}\defeq\E{R_{t+1}\x_t}$\\
+\>$\w_{\rm TD}$       \> TD fixed point $\w_{\rm TD}\defeq {\bf A}^{-1}{\bf b}$ (a $d$-vector\\
+\>${\bf I}$           \> identity matrix\\
+\>${\bf P}$           \> $|\S|\times |\S|$ matrix of state-transition probabilities under $\pi$\\
+\>${\bf D}$           \> $|\S|\times |\S|$ diagonal matrix with $\bm\mu$ on its diagonal\\
+\>${\bf X}$           \> $|\S|\times d$ matrix with the $\x(s)$ as its rows\\
+\\
+\>$\bar\delta_\w(s)$  \> Bellman error (expected TD error) for $v_\w$ at state $s$\\
+\>$\bar\delta_\w$, BE \> Bellman error vector, with components $\bar\delta_\w(s)$\\
+\>$\MSVEm(\w)$        \> mean square value error $\MSVEm(\w)\defeq\norm{v_\w-\vpi}$\\
+\>$\MSBEm(\w)$        \> mean square Bellman error $\MSBEm(\w)\defeq\norm{\bar\delta_\w}$\\
+\>$\MSPBEm(\w)$       \> mean square projected Bellman error $\MSPBEm(\w)\defeq\norm{\Pi\bar\delta_\w}$\\
+\>$\MSTDEm(\w)$       \> mean square temporal-difference error $\MSTDEm(\w)\defeq\EE{b}{\rho_t\delta_t^2}$ \\
+\>$\MSREm(\w)$        \> mean square return error\\
+%\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\pagenumbering{arabic}
+%\setcounter{page}{1}
+
+%hyphenation, very important for style https://tex.stackexchange.com/a/177179
+%\tolerance=1
+\emergencystretch=\maxdimen
+\hyphenpenalty=10000
+\hbadness=10000
+
+\newpage
+
+\section*{\hfil Abstract\hfil}
+\begin{changemargin}{4cm}{4cm}
+	Das ist vielleicht der beste Abstract ever!
+\end{changemargin}
+\section{Einleitung}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\raggedright
+\section{Bestärktendes Lernen}
+Was ist Intelligenz? \\
+Intelligenz ist die Fähigkeit anpassungsfähig zu sein, und neue Dinge zu lernen.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Unterschiede zum überwachten Lernen}
+
+\subsection{Definitionen}
+Um den Algorithmus mathematisch beschreiben zu können wird im folgenden definiert welche Variablen benutzt werden und
+was sie genau bedeuten. Hierbei wird die Standartnotation welche Sutton et Al. definiert haben gefolgt \cite{Sutton}.
+Das Symbolverzeichnis enthält eine Zusammenfassung der genutzten Symbolik.
+
+\subsubsection{Agent und Umwelt}
+Der Lernende und Entscheidende ist der Agent. Alles womit der Agent interagiert, wird \emph{Umgebung} genannt. Durch die kontinuierliche Interaktion zwischen diese zwei Akteure wird der Agent mit neue \emph{Zustände} (Kap. \ref{section:zustand}) präsentiert und wählt dementsprechend geeignete \emph{Aktionen} (Kap. \ref{section:aktion}). Die Umwelt gibt auch ein spezielles Signal, welches \emph{Belohnung} (Kap. \ref{section:belohnung}) genannt wird. Die zentrale Aufgabe des Agenten ist die Maximierung der Belohnung durch die Wahl seiner Aktionen. In dieser Arbeit werden nur diskrete Zeitschritte $t \in \{1, 2, 3, ...\}$ behandelt. Kontinuierliche Zeitschritte sind zwar möglich, aber jedoch mit einer höheren Komplexität verbunden.
+
+\subsubsection{Zustand} \label{section:zustand}
+Ein Zustand $S_{t}$ zur Zeit $t$ beinhaltet ein Schnappschuss von der derzeitigen Umgebung. Es sind nur die Informationen beinhaltet, die der Agent auch wahrnehmen kann. Oft sind diese Informationen in einem Vektor mit z.B. Position, Geschwindigkeit kodiert. Im wesentlichen ist in $S_{t}$ die Aufsicht der Welt für den Agenten. Ob diese Werte kontinuierlich oder diskret aufgefasst werden ist auch noch relevant. Die Auswirkungen sind weiter im Kapitel \ref{section:q-funktion} beschrieben. \\
+Es gilt: $S_{t}, s \in \S^{+}$; wobei $\S^{+}$ alle Zustände (auch terminale) enthält.
+
+
+\subsubsection{Aktion} \label{section:aktion}
+Um auch mit der Umwelt agieren zu können, sind in einem gegebenen Zustand $S_{t}$ eine Aktionsmenge $\A(s)$ verfügbar. So kann es beim Auto das Beschleunigen, Bremsen und die Lenkrichtung sein. Natürlich ist keine Aktion, in der Fachliteratur oft NOOP (No Operation, siehe z.B. ALE \cite{Bellemare_2013}), auch in der Menge enthalten. In dieser Arbeit sind die Aktionen diskrete Mengen, so dass $A_{t}, a \in \A(s) \in \Re$. Die Aktion wird als Zahl aufgefasst, welcher einer Operation zugeordnet wird. So können 0 = NOOP, 1 = Lenkrad nach links (mit einer gesetzten Kraft), 2 = Lenkrad nach rechts und die verbleibenden Aktionen steuern die volle Be- oder Entschleunigung.
+Für den Agenten ist es übrigens nicht relevant zu wissen was die Aktionen genau bedeuten. Heisst: Es muss nicht gegeben sein dass der Agent weisst welche Aktionszahl einem NOOP entspricht usw.
+
+\subsubsection{Belohnung} \label{section:belohnung}
+Im bestärktem Lernen ist die Belohnung ein Signal der Umwelt, um bewerten zu können wie sich die Aktionen und Verhaltensweisen sich auf die Leistung auswirkt. Zu jedem Zeitschritt entspricht die Belohnung einer Zahl aus der reellen Zahlenmenge, $R_t \in \Re$.\\*
+Um die Gesamtbelohnung zur Zeit $t$, $G_t$, zu erhalten, werden die einzelne Belohnungen bis zum letzten Zeitschritt $T$ addiert. So werden auch zukünftige Belohnungen berücksichtigt.
+\begin{equation}\label{eqn:gesamtbelohnung_undiskontiert}
+	G_t =\sum_{k=1}^{T-t}R_{t+k}
+\end{equation}
+Die obige Definition ist jedoch problematisch für Episoden\footnote{Als eine Episode gilt ein Spieldurchlauf bis zum terminalen Zustand. }die nicht aufhören. \\*
+Also wenn $T = \infty$. Das kann z.B. ein Temperaturregler sein, welches die Belohnung $+1$ erhält wenn es eine Temperatur hält. Um die Gesamtbelohnung selbst mit unendlich Zeitschritte garantiert konvergieren zu lassen, wird ein Diskontfaktor $\gamma$ eingeführt.\\* Wenn $0 \leq \gamma < 1$, dann wird die folgende geometrische Serie konvergieren:
+\begin{align}
+	\begin{split} \label{eqn:geometric_series}
+		G_t &= \sum_{k=1}^{\infty}\gamma^{k} \\*
+		G_t &= \frac{1}{1-\gamma}
+	\end{split}
+\end{align}
+
+%\begin{equation} \label{eqn:geometric_series}
+%\begin{aligned}
+%	G_t = \sum_{k=1}^{\infty}\gamma^{k} \\*
+%	G_t = \frac{1}{1-\gamma}
+%\end{aligned}
+%\end{equation}
+
+Werden die Grundideen der Gleichungen \ref{eqn:gesamtbelohnung_undiskontiert} und \ref{eqn:geometric_series} kombiniert, so erhält man die Definition der Gesamtbelohnung $G_t$ das sowohl in endliche und unendliche Episoden konvergiert und zukünftige Belohnungen berücksichtigt:
+\begin{align}
+G_t &\defeq R_{t+1} + \gamma R_{t+2} + \gamma^{2}R_{t+3} + \gamma^{3}R_{t+4} + ... \nonumber \\*
+G_t &= \sum_{k=t+1}^{T} \gamma^{k-t-1}R_k
+\end{align}
+\newpage
+Setzt man $\gamma=0$ wird nur die nächste Belohnung berücksichtigt. Es gibt auch die Möglichkeit $T=\infty$ oder $ \gamma=1$, aber nicht beides gleichzeitig. \\
+Tatsächlich können viele Ziele anhand von einem Skalar ausgedrückt werden \cite{Sutton}. In den meisten Fällen ist das Design der Belohnungen leicht, besonders für einfach Probleme. Für komplexere Ziele und Aufgaben kann es sinnvoll sein Unterziele zu definieren. Im bestärkten Lernen ist das Atari Spiel 'Montezuma's revenge' eines der schwierigsten Herausforderungen \cite{montezuma}. Man muss für das Ende des Spiels sehr viele spezifische Aktionen durchführen und bekommt dann erst die Belohnung (Siehe Abbildung \ref{fig:montezuma}).
+%	\begin{figure}
+%		\includegraphics[width=50mm]{bilder/belohnungen/montezumas_revenge.png}
+%		\caption{Montezuma's revenge}
+%		\label{fig:montezuma}
+%	\end{figure}
+
+%\begin{minipage}[t]{0.3\textwidth}
+%	sample text
+%\end{minipage}
+\begin{figure}
+	\hspace{0.05\textwidth}
+	\begin{minipage}{0.5\textwidth}
+	\caption{Montezuma's Revenge}
+	\label{fig:montezuma}
+	Eine Abbildung vom Spiel "Montezuma's Revenge". Durch das gezielte setzen von Zwischenbelohnungen kann man in einer Absehbaren Zeitspanne trotzdem zum Ziel kommen. \\Beispiel: Ein Agent kann hier durch eine höhere Position belohnt werden.
+\end{minipage}
+\hspace{1.5mm}
+\begin{minipage}{0.3\textwidth}
+	\includegraphics[width=55mm]{bilder/belohnungen/montezumas_revenge.png} \\*
+\end{minipage}\hspace{0.1\textwidth}
+\end{figure}
+
+\subsubsection{Markov Entscheidungsprozesse (MDP's)}
+Die heutige Welt ist das Resultat vergangene Aktionen und Zustände. Durch die Interaktion vom Agenten und der Umwelt ergibt sich eine Sequenz die etwa so aussieht\footnote{Die Belohnung ist das Resultat der vorherigen Aktion und Zustand. Um dies zu verdeutlichen wird es mit $R_{t+1}$ für die vorherigen $A_t$ und $S_t$ notiert. In der Fachliteratur wird aber auch häufig $R_t$ für dasselbe verwendet.}:
+\begin{equation} \label{eqn:sequenz}
+S_{0}, A_{0}, R_{1}, S_{1}, A_{1}, R_{2}, S_{2}, A_{2}, R_{3}, ... \nonumber
+\end{equation}
+Durch welche Aktionen der nächste Zustand folgt, ist vom MDP abhängig. Im endlichen Fall, wo $\S$, $\A$ und $\R$ eine endliche Anzahl von Elementen haben, sind die Zufallsvariabeln $R_t$ und $S_t$ klar definiert. Womit man die obige Intuition in eine Gleichung formulieren kann. Also eine Übergangsfunktion:
+\begin{equation} \label{eqn:mdp-übergang}
+	p(s',r|s,a) \defeq Pr\{S_{t+1}=s', R_{t+1}=r|S_t=s,A_t=a\}
+\end{equation}
+Dies gilt für alle $s', s \in \S$, $r \in \R$ und $a \in \A(s)$. Die Übergangfunktion $p$ definiert also die Dynamik des MDP.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Funktionen}
+\subsubsection{Richtlinien}
+Die Richtlinie ist gibt eine Wahrscheinlichkeitsverteilung über alle möglichen Aktionen im Zustand $s$; $\pi(a|s)$. Methoden im RL verändern die Wahrscheinlichkeitsverteilungen des Agenten durch die gesammelte Erfahrung.
+Mit der aktuellen Richtlinie ist $\arg\max_{a}\pi(a|s)$ die wahrscheinlichste Aktion in einem gegebenen Zustand. Eine Richtlinie muss immer eine Aktion treffen können: $\sum_{a}\pi(a|s) = 1$. ($\sum_{a}$ bedeutet die Summe über alle möglichen Aktionen.)
+\subsubsection{Die Value-Funktion}
+Fast alle RL Algorithmen brauchen eine Wertfunktion für einen gegebenen Zustand. Solche Wertfunktionen schätzen \emph{wie gut} es für den Agenten ist, in einem gegebenen Zustand zu sein. Dies geschieht durch eine Schätzung der Gesamtbelohnung $G_t$. Für MDP's kann man $v_{\pi}$ so definieren\footnote{Dies gilt für alle $s \in \S$.}:
+\begin{equation} \label{eqn:value_definition}
+	\vpi(s) \defeq \CEE{\pi}{G_t}{S_t=s} = \CEE{\pi}{\sum_{k=0}^{\infty}\gamma^{k}R_{t+k+1}}{S_t=s}
+\end{equation}
+$\EE{\pi}{\cdot}$ notiert den erwarteten Wert für eine Zufallsvariable, angenommen der Agent folgt die Richtlinie $\pi$ und $t$ ist ein beliebiger Zeitschritt.
+
+\subsubsection{Die Q-Funktion} \label{section:q-funktion}
+Ähnlich wie für die Wertfunktion, kann man für Aktion-Zustand Paare die erwartete Gesamtbelohnung durch die Q-Funktion schätzen. Dies kann nützlich sein um eine geeignete Aktion mittels $\arg\max_{a}q(s,a)$ zu ermitteln. Die Q-Funktion für die Richtlinie $\pi$ wird wie folgt definiert:
+\begin{equation} \label{eqn:q_definition}
+	q_\pi(s,a) \defeq \CEE{\pi}{G_t}{S_t=s, A_t=a} = \CEE{\pi}{\sum_{k=0}^{\infty}\gamma^{k}R_{t+k+1}}{S_t=s, A_t=a}
+\end{equation}
+
+Sowohl die Q-Funktion, als auch die Wertfunktion können abgeschätzt werden. Die einfachste Möglichkeit ist wohl dass man den Durchschnitt für den Q-Wert in einem Spieldurchgang aufnimmt, man also möglichst alle Zustand-Aktion Kombinationen erfährt und so die Q-Funktion in einer Art Tabelle darstellt. Diese Monte Carlo Methoden sind jedoch sehr ineffizient und eher für MDP's geeignet, dessen Aktions- und Zustandsräume klein sind. So wie z.B. in Schere Stein Papier"\cite{Wang2020}.
+
+
+\subsubsection{Deep Q-Learning}
+Einen Ansatz eine Q-Funktion für riesige Zustandsräume zu finden ist der Einsatz von künstlichen neuronalen Netzen (KNN). Besonders durch den Fortschritt im Bereich maschinelles Lernen und der erhöhten Rechenkapazität ist die Nutzung solcher sinnvoller geworden. Wenn ein solches KNN die Q-Funktion abschätzt, wird es als Q-Netzwerk bezeichnet\cite{AtariDeepRL}.
+Aus einem Speicher mit gesammelten Erfahrungen wird ein Tupel entnommen. Der Tupel enthält $(s, a, r, s', flag)$\footnote{s' ist der Zustand nach s. 'flag' ist ein Boolean welches auf ein Episodenende hinweist.}. Aus den Werten kann man ein Zielwert $y_i$ für $Q(s,a)$ berechnen. Hierbei ist $i$ ein Iterationsschritt.
+\begin{align}
+	y_i &= r_i + \gamma * \max_{a'}Q(s', a'; \th_{i-1}) \\
+	y_i &= -1 \nonumber
+\end{align}
+Für den Fall dass eine Episode endet wird der Zielwert anders berechnet\footnote{Im Werk 'Playing Atari with Deep Reinforcement Learning'\cite{AtariDeepRL} wurde $y_i = r_i$ gesetzt falls es ein Episodenende war. Es hat sich aber experimentell erwiesen dass $y_i=-1$ bei Episodenenden schneller und für höhere Punktzahlen verursacht hat. Eine negative Belohnung ist hier eine Bestrafung für ein Spielende und motiviert den Agenten solch einen Zustand zu vermeiden.}. Bemerkenswert ist dass die Parameter fixiert werden wenn der Zielwert berechnet wird. Das ist für die folgende Verlustfunktion von Bedeutung.
+
+Das Q-Netzwerk mit dem Parametervektor $\th_t$ kann durch die Minimierung der Verlustfunktion $L$ trainiert werden, welches sich in jeder Iteration $i$ ändert.
+\begin{equation}
+	L_i(\th_i) = \EE{s,a\sim \rho(\cdot)}{(y_i - Q(s,a;\th_i))^2}
+\end{equation}
+$\rho(s, a)$ ist eine Wahrscheinlichkeitsverteilung über $s$ und $a$. Die Verteilung bildet sich aus der Häufigkeit von den Zustands-Aktions Paaren in den gesammelten Erfahrungen. Leitet man die Verlustfunktion nach $\th_i$ ab, erhält man den nötigen Gradienten um den Verlust von $\th_i$ zu minimieren. $\mathcal{E}$ ist der Emulator aus dem der Zustand $s'$ gesammelt wird.
+\begin{equation}
+	\grad_{\th_i}L_i(\th_i) = \EE{s,a\sim \rho(\cdot);s'\sim\mathcal{E}}{(r_i + \gamma \max_{a'}Q(s', a';\th_{i-1}) - Q(s,a;\th_i))\grad_{\th_i}Q(s,a,\th_i)}
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\subsection{Die Bellmann Gleichungen}
+\subsection{Exploration vs. Die beste Aktion}
+
+\subsubsection{Epsilon}
+
+\subsubsection{Andere Methoden}
+
+
+%%%%%%
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Genereller Agent}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Aufbau}
+
+\subsubsection{Vorverarbeitung}
+
+\subsubsection{Hyperparameter}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Evaluation}
+
+\subsubsection{Auswahl der Spiele}
+
+\subsubsection{Performance im Vergleich zu anderen Algorithmen}
+
+\subsubsection{Trainingsgeschwindigkeit}
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Schlussbetrachtung}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Ausblick}
+\newpage
+
+
+
+\begingroup
+\addcontentsline{toc}{section}{Literaturverzeichnis}
+\renewcommand*\refname{Literaturverzeichnis}
+\printbibliography
+
+\endgroup
+
+\newpage
+\section*{Anhang A}
+\pagenumbering{Roman}
+\setcounter{page}{1}
+
+
+\addcontentsline{toc}{section}{Anhang A}
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Anhang B}
+\addcontentsline{toc}{section}{Anhang B}
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
