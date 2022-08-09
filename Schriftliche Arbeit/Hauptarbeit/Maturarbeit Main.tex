@@ -255,7 +255,7 @@ Intelligenz ist die Fähigkeit anpassungsfähig zu sein, und neue Dinge zu lerne
 
 \subsection{Definitionen}
 Um den Algorithmus mathematisch beschreiben zu können wird im folgenden definiert welche Variablen benutzt werden und
-was sie genau bedeuten. Hierbei wird die Standartnotation welche Sutton et Al. definiert haben gefolgt \cite{Sutton}.
+was sie genau bedeuten. Hierbei wird die Standartnotation welche Sutton et Al. definiert haben gefolgt \cite{suttonReinforcementLearningIntroduction2018}.
 Das Symbolverzeichnis enthält eine Zusammenfassung der genutzten Symbolik.
 
 \subsubsection{Agent und Umwelt}
@@ -267,7 +267,7 @@ Es gilt: $S_{t}, s \in \S^{+}$; wobei $\S^{+}$ alle Zustände (auch terminale) e
 
 
 \subsubsection{Aktion} \label{section:aktion}
-Um auch mit der Umwelt agieren zu können, sind in einem gegebenen Zustand $S_{t}$ eine Aktionsmenge $\A(s)$ verfügbar. So kann es beim Auto das Beschleunigen, Bremsen und die Lenkrichtung sein. Natürlich ist keine Aktion, in der Fachliteratur oft NOOP (No Operation, siehe z.B. ALE \cite{Bellemare_2013}), auch in der Menge enthalten. In dieser Arbeit sind die Aktionen diskrete Mengen, so dass $A_{t}, a \in \A(s) \in \Re$. Die Aktion wird als Zahl aufgefasst, welcher einer Operation zugeordnet wird. So können 0 = NOOP, 1 = Lenkrad nach links (mit einer gesetzten Kraft), 2 = Lenkrad nach rechts und die verbleibenden Aktionen steuern die volle Be- oder Entschleunigung.
+Um auch mit der Umwelt agieren zu können, sind in einem gegebenen Zustand $S_{t}$ eine Aktionsmenge $\A(s)$ verfügbar. So kann es beim Auto das Beschleunigen, Bremsen und die Lenkrichtung sein. Natürlich ist keine Aktion, in der Fachliteratur oft NOOP (No Operation, siehe z.B. ALE \cite{bellemareArcadeLearningEnvironment2013}), auch in der Menge enthalten. In dieser Arbeit sind die Aktionen diskrete Mengen, so dass $A_{t}, a \in \A(s) \in \Re$. Die Aktion wird als Zahl aufgefasst, welcher einer Operation zugeordnet wird. So können 0 = NOOP, 1 = Lenkrad nach links (mit einer gesetzten Kraft), 2 = Lenkrad nach rechts und die verbleibenden Aktionen steuern die volle Be- oder Entschleunigung.
 Für den Agenten ist es übrigens nicht relevant zu wissen was die Aktionen genau bedeuten. Heisst: Es muss nicht gegeben sein dass der Agent weisst welche Aktionszahl einem NOOP entspricht usw.
 
 \subsubsection{Belohnung} \label{section:belohnung}
@@ -346,7 +346,7 @@ Fast alle RL Algorithmen brauchen eine Wertfunktion für einen gegebenen Zustand
 $\EE{\pi}{\cdot}$ notiert den erwarteten Wert für eine Zufallsvariable, angenommen der Agent folgt die Richtlinie $\pi$ und $t$ ist ein beliebiger Zeitschritt.
 
 \subsubsection{Die Q-Funktion} \label{section:q-funktion}
-Ähnlich wie für die Wertfunktion, kann man für Aktion-Zustand Paare die erwartete Gesamtbelohnung durch die Q-Funktion schätzen. Dies kann nützlich sein um eine geeignete Aktion mittels $\arg\max_{a}q(s,a)$ zu ermitteln. Die Q-Funktion für die Richtlinie $\pi$ wird wie folgt definiert\cite{qlear}{\cite{watkinsQlearning1992}:
+Ähnlich wie für die Wertfunktion, kann man für Aktion-Zustand Paare die erwartete Gesamtbelohnung durch die Q-Funktion schätzen. Dies kann nützlich sein um eine geeignete Aktion mittels $\arg\max_{a}q(s,a)$ zu ermitteln. Die Q-Funktion für die Richtlinie $\pi$ wird wie folgt definiert{\cite{watkinsQlearning1992}:
 \begin{equation} \label{eqn:q_definition}
 	q_\pi(s,a) \defeq \CEE{\pi}{G_t}{S_t=s, A_t=a} = \CEE{\pi}{\sum_{k=0}^{\infty}\gamma^{k}R_{t+k+1}}{S_t=s, A_t=a}
 \end{equation}
@@ -355,13 +355,13 @@ Sowohl die Q-Funktion, als auch die Wertfunktion können abgeschätzt werden. Di
 
 
 \subsubsection{Deep Q-Learning}
-Einen Ansatz eine Q-Funktion für riesige Zustandsräume zu finden ist der Einsatz von künstlichen neuronalen Netzen (KNN). Besonders durch den Fortschritt im Bereich maschinelles Lernen und der erhöhten Rechenkapazität ist die Nutzung solcher sinnvoller geworden. Wenn ein solches KNN die Q-Funktion abschätzt, wird es als Q-Netzwerk bezeichnet\cite{AtariDeepRL}.
+Einen Ansatz eine Q-Funktion für riesige Zustandsräume zu finden ist der Einsatz von künstlichen neuronalen Netzen (KNN). Besonders durch den Fortschritt im Bereich maschinelles Lernen und der erhöhten Rechenkapazität ist die Nutzung solcher sinnvoller geworden. Wenn ein solches KNN die Q-Funktion abschätzt, wird es als Q-Netzwerk bezeichnet\cite{mnihHumanlevelControlDeep2015b}.
 Aus einem Speicher mit gesammelten Erfahrungen wird ein Tupel entnommen. Der Tupel enthält $(s, a, r, s', flag)$\footnote{s' ist der Zustand nach s. 'flag' ist ein Boolean welches auf ein Episodenende hinweist.}. Aus den Werten kann man ein Zielwert $y_i$ für $Q(s,a)$ berechnen. Hierbei ist $i$ ein Iterationsschritt.
 \begin{align}
 	y_i &= r_i + \gamma * \max_{a'}Q(s', a'; \th_{i-1}) \\
 	y_i &= -1 \nonumber
 \end{align}
-Für den Fall dass eine Episode endet wird der Zielwert anders berechnet\footnote{Im Werk 'Playing Atari with Deep Reinforcement Learning'\cite{AtariDeepRL} wurde $y_i = r_i$ gesetzt falls es ein Episodenende war. Es hat sich aber experimentell erwiesen dass $y_i=-1$ bei Episodenenden schneller und für höhere Punktzahlen verursacht hat. Eine negative Belohnung ist hier eine Bestrafung für ein Spielende und motiviert den Agenten solch einen Zustand zu vermeiden.}. Bemerkenswert ist dass die Parameter fixiert werden wenn der Zielwert berechnet wird. Das ist für die folgende Verlustfunktion von Bedeutung.
+Für den Fall dass eine Episode endet wird der Zielwert anders berechnet\footnote{Im Werk 'Playing Atari with Deep Reinforcement Learning'\cite{mnihHumanlevelControlDeep2015b} wurde $y_i = r_i$ gesetzt falls es ein Episodenende war. Es hat sich aber experimentell erwiesen dass $y_i=-1$ bei Episodenenden schneller und für höhere Punktzahlen verursacht hat. Eine negative Belohnung ist hier eine Bestrafung für ein Spielende und motiviert den Agenten solch einen Zustand zu vermeiden.}. Bemerkenswert ist dass die Parameter fixiert werden wenn der Zielwert berechnet wird. Das ist für die folgende Verlustfunktion von Bedeutung.
 
 Das Q-Netzwerk mit dem Parametervektor $\th_t$ kann durch die Minimierung der Verlustfunktion $L$ trainiert werden, welches sich in jeder Iteration $i$ ändert.
 \begin{equation}
