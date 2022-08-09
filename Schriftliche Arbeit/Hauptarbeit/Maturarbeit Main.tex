@@ -17,7 +17,7 @@
 		sorting=none]{biblatex}
 
 \addbibresource{quellen/quellen.bib}
-\addbibresource{quellen/AtariRLquellen.bib}
+\addbibresource{quellen/zotero.bib}
 %\addbibresource{quellen/NIPS-2016-deep-exploration-via-bootstrapped-dqn-Bibtex.bib}
 
 \numberwithin{equation}{section} %Nummeriert mathematische Umgebungen nach sections durch
@@ -346,7 +346,7 @@ Fast alle RL Algorithmen brauchen eine Wertfunktion für einen gegebenen Zustand
 $\EE{\pi}{\cdot}$ notiert den erwarteten Wert für eine Zufallsvariable, angenommen der Agent folgt die Richtlinie $\pi$ und $t$ ist ein beliebiger Zeitschritt.
 
 \subsubsection{Die Q-Funktion} \label{section:q-funktion}
-Ähnlich wie für die Wertfunktion, kann man für Aktion-Zustand Paare die erwartete Gesamtbelohnung durch die Q-Funktion schätzen. Dies kann nützlich sein um eine geeignete Aktion mittels $\arg\max_{a}q(s,a)$ zu ermitteln. Die Q-Funktion für die Richtlinie $\pi$ wird wie folgt definiert:
+Ähnlich wie für die Wertfunktion, kann man für Aktion-Zustand Paare die erwartete Gesamtbelohnung durch die Q-Funktion schätzen. Dies kann nützlich sein um eine geeignete Aktion mittels $\arg\max_{a}q(s,a)$ zu ermitteln. Die Q-Funktion für die Richtlinie $\pi$ wird wie folgt definiert\cite{qlear}{\cite{watkinsQlearning1992}:
 \begin{equation} \label{eqn:q_definition}
 	q_\pi(s,a) \defeq \CEE{\pi}{G_t}{S_t=s, A_t=a} = \CEE{\pi}{\sum_{k=0}^{\infty}\gamma^{k}R_{t+k+1}}{S_t=s, A_t=a}
 \end{equation}
