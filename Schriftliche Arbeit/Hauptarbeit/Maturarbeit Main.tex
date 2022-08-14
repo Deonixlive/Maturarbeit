@@ -10,11 +10,22 @@
 \usepackage{csquotes}
 \usepackage{notation}
 \usepackage{parskip}
+\usepackage{color}
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=false,
+	linktoc=all
+}
 
 %\usepackage[document]{ragged2e}
 \usepackage[style=numeric,
 		backend=biber,
 		sorting=none]{biblatex}
+
+%write algorithms
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
 
 \addbibresource{quellen/quellen.bib}
 \addbibresource{quellen/zotero.bib}
@@ -68,7 +79,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%\thispagestyle{empty}
+%\thetaispagestyle{empty}
 %\pagenumbering{Roman}
 
 \newpage
@@ -163,7 +174,7 @@
 \>$n$                 \> in $n$-Schritte Methoden, ist $n$ ist die Zahl der Schritte im Bootstrapping.\\
 \\
 \>$d$                 \> dimensionality---the number of components of $\w$\\
-\>$d'$                \> alternate dimensionality---the number of components of $\th$\\
+\>$d'$                \> alternate dimensionality---the number of components of $\theta$\\
 \>$\w,\w_t$           \> $d$-vector of weights underlying an approximate value function\\
 \>$w_i,w_{t,i}$ \> $i$th component of learnable weight vector\\
 \>$\hat v(s,\w)$      \> approximate value of state $s$ given weight vector $\w$\\
@@ -177,16 +188,16 @@
 \>$x_i(s), x_i(s,a)$  \> $i$th component of vector $\x(s)$ or $\x(s, a)$\\
 \>$\x_t$              \> shorthand for $\x(S_t)$ or $\x(S_t,A_t)$\\
 \>$\w\tr\x$           \> inner product of vectors, $\w\tr\x\defeq\sum_i w_i x_i$; e.g., $\hat v(s,\w)\defeq\w\tr\x(s)$\\
-\>$\v,\v_t$           \> secondary $d$-vector of weights, used to learn $\w$ \\
+%\>$\v,\v_t$           \> secondary $d$-vector of weights, used to learn $\w$ \\
 \>$\z_t$              \> $d$-vector of eligibility traces at time $t$ \\
 \\
-\>$\th, \th_t$        \> Parametervektor von der Zielrichtlinie. \\
-\>$\pi(a|s,\th)$      \> die Wahrscheinlichkeit Aktion $a$ im Zustand $s$ mit dem Parametervektor $\th$ zu treffen.\\
-\>$\pi_\th$           \> Richtlinie die $\th$ entspricht.\\
-\>$\grad\pi(a|s,\th)$ \>column vector of partial derivatives of $\pi(a|s,\th)$ with respect to $\th$\\
-\>$J(\th)$            \> performance measure for the policy $\pi_\th$\\
-\>$\grad J(\th)$      \> column vector of partial derivatives of $J(\th)$ with respect to $\th$\\
-\>$h(s,a,\th)$        \> preference for selecting action $a$ in state $s$ based on $\th$\\
+\>$\theta, \theta_t$        \> Parametervektor von der Zielrichtlinie. \\
+\>$\pi(a|s,\theta)$      \> die Wahrscheinlichkeit Aktion $a$ im Zustand $s$ mit dem Parametervektor $\theta$ zu treffen.\\
+\>$\pi_{\theta}$           \> Richtlinie die $\theta$ entspricht.\\
+\>$\grad\pi(a|s,\theta)$ \>column vector of partial derivatives of $\pi(a|s,\theta)$ with respect to $\theta$\\
+\>$J(\theta)$            \> performance measure for the policy $\pi_{\theta}$\\
+\>$\grad J(\theta)$      \> column vector of partial derivatives of $J(\theta)$ with respect to $\theta$\\
+\>$h(s,a,\theta)$        \> preference for selecting action $a$ in state $s$ based on $\theta$\\
 \\
 \>$b(a|s)$            \> behavior policy used to select actions while learning about target policy $\pi$ \\
 \>$b(s)$              \> a baseline function $b:\S\mapsto\Re$ for policy-gradient methods\\
@@ -239,7 +250,6 @@
 	Das ist vielleicht der beste Abstract ever!
 \end{changemargin}
 \section{Einleitung}
-\newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -267,7 +277,7 @@ Es gilt: $S_{t}, s \in \S^{+}$; wobei $\S^{+}$ alle Zustände (auch terminale) e
 
 
 \subsubsection{Aktion} \label{section:aktion}
-Um auch mit der Umwelt agieren zu können, sind in einem gegebenen Zustand $S_{t}$ eine Aktionsmenge $\A(s)$ verfügbar. So kann es beim Auto das Beschleunigen, Bremsen und die Lenkrichtung sein. Natürlich ist keine Aktion, in der Fachliteratur oft NOOP (No Operation, siehe z.B. ALE \cite{bellemareArcadeLearningEnvironment2013}), auch in der Menge enthalten. In dieser Arbeit sind die Aktionen diskrete Mengen, so dass $A_{t}, a \in \A(s) \in \Re$. Die Aktion wird als Zahl aufgefasst, welcher einer Operation zugeordnet wird. So können 0 = NOOP, 1 = Lenkrad nach links (mit einer gesetzten Kraft), 2 = Lenkrad nach rechts und die verbleibenden Aktionen steuern die volle Be- oder Entschleunigung.
+Um auch mit der Umwelt agieren zu können, sind in einem gegebenen Zustand $S_{t}$ eine Aktionsmenge $\A(s)$ verfügbar. So kann es beim Auto das Beschleunigen, Bremsen und die Lenkrichtung sein. Natürlich ist keine Aktion, in der Fachliteratur oft NOOP (No Operation, siehe z.B. ALE \cite{Bellemare_2013}), auch in der Menge enthalten. In dieser Arbeit sind die Aktionen diskrete Mengen, so dass $A_{t}, a \in \A(s) \in \Re$. Die Aktion wird als Zahl aufgefasst, welcher einer Operation zugeordnet wird. So können 0 = NOOP, 1 = Lenkrad nach links (mit einer gesetzten Kraft), 2 = Lenkrad nach rechts und die verbleibenden Aktionen steuern die volle Be- oder Entschleunigung.
 Für den Agenten ist es übrigens nicht relevant zu wissen was die Aktionen genau bedeuten. Heisst: Es muss nicht gegeben sein dass der Agent weisst welche Aktionszahl einem NOOP entspricht usw.
 
 \subsubsection{Belohnung} \label{section:belohnung}
@@ -297,7 +307,7 @@ Werden die Grundideen der Gleichungen \ref{eqn:gesamtbelohnung_undiskontiert} un
 G_t &\defeq R_{t+1} + \gamma R_{t+2} + \gamma^{2}R_{t+3} + \gamma^{3}R_{t+4} + ... \nonumber \\*
 G_t &= \sum_{k=t+1}^{T} \gamma^{k-t-1}R_k
 \end{align}
-\newpage
+
 Setzt man $\gamma=0$ wird nur die nächste Belohnung berücksichtigt. Es gibt auch die Möglichkeit $T=\infty$ oder $ \gamma=1$, aber nicht beides gleichzeitig. \\
 Tatsächlich können viele Ziele anhand von einem Skalar ausgedrückt werden \cite{Sutton}. In den meisten Fällen ist das Design der Belohnungen leicht, besonders für einfach Probleme. Für komplexere Ziele und Aufgaben kann es sinnvoll sein Unterziele zu definieren. Im bestärkten Lernen ist das Atari Spiel 'Montezuma's revenge' eines der schwierigsten Herausforderungen \cite{montezuma}. Man muss für das Ende des Spiels sehr viele spezifische Aktionen durchführen und bekommt dann erst die Belohnung (Siehe Abbildung \ref{fig:montezuma}).
 %	\begin{figure}
@@ -339,39 +349,47 @@ Dies gilt für alle $s', s \in \S$, $r \in \R$ und $a \in \A(s)$. Die Übergangf
 Die Richtlinie ist gibt eine Wahrscheinlichkeitsverteilung über alle möglichen Aktionen im Zustand $s$; $\pi(a|s)$. Methoden im RL verändern die Wahrscheinlichkeitsverteilungen des Agenten durch die gesammelte Erfahrung.
 Mit der aktuellen Richtlinie ist $\arg\max_{a}\pi(a|s)$ die wahrscheinlichste Aktion in einem gegebenen Zustand. Eine Richtlinie muss immer eine Aktion treffen können: $\sum_{a}\pi(a|s) = 1$. ($\sum_{a}$ bedeutet die Summe über alle möglichen Aktionen.)
 \subsubsection{Die Value-Funktion}
-Fast alle RL Algorithmen brauchen eine Wertfunktion für einen gegebenen Zustand. Solche Wertfunktionen schätzen \emph{wie gut} es für den Agenten ist, in einem gegebenen Zustand zu sein. Dies geschieht durch eine Schätzung der Gesamtbelohnung $G_t$. Für MDP's kann man $v_{\pi}$ so definieren\footnote{Dies gilt für alle $s \in \S$.}:
+Fast alle RL Algorithmen brauchen eine Wertfunktion für einen gegebenen Zustand. Solche Wertfunktionen schätzen \emph{wie gut} es für den Agenten ist, in einem gegebenen Zustand zu sein. Dies geschieht durch eine Schätzung der Gesamtbelohnung $G_t$. Für MDP's kann man $v_{\pi}$ so definieren\footnote{Dies gilt für alle $s \in \S$.}\cite{suttonReinforcementLearningIntroduction2018}:
 \begin{equation} \label{eqn:value_definition}
 	\vpi(s) \defeq \CEE{\pi}{G_t}{S_t=s} = \CEE{\pi}{\sum_{k=0}^{\infty}\gamma^{k}R_{t+k+1}}{S_t=s}
 \end{equation}
 $\EE{\pi}{\cdot}$ notiert den erwarteten Wert für eine Zufallsvariable, angenommen der Agent folgt die Richtlinie $\pi$ und $t$ ist ein beliebiger Zeitschritt.
 
 \subsubsection{Die Q-Funktion} \label{section:q-funktion}
-Ähnlich wie für die Wertfunktion, kann man für Aktion-Zustand Paare die erwartete Gesamtbelohnung durch die Q-Funktion schätzen. Dies kann nützlich sein um eine geeignete Aktion mittels $\arg\max_{a}q(s,a)$ zu ermitteln. Die Q-Funktion für die Richtlinie $\pi$ wird wie folgt definiert{\cite{watkinsQlearning1992}:
+Ähnlich wie für die Wertfunktion, kann man für Aktion-Zustand Paare die erwartete Gesamtbelohnung durch die Q-Funktion schätzen. Dies kann nützlich sein um eine geeignete Aktion mittels $\arg\max_{a}Q(s,a)$ zu ermitteln. Die Q-Funktion für die Richtlinie $\pi$ wird wie folgt definiert{\cite{watkinsQlearning1992}:
 \begin{equation} \label{eqn:q_definition}
-	q_\pi(s,a) \defeq \CEE{\pi}{G_t}{S_t=s, A_t=a} = \CEE{\pi}{\sum_{k=0}^{\infty}\gamma^{k}R_{t+k+1}}{S_t=s, A_t=a}
+	Q_\pi(s,a) \defeq \CEE{\pi}{G_t}{S_t=s, A_t=a} = \CEE{\pi}{\sum_{k=0}^{\infty}\gamma^{k}R_{t+k+1}}{S_t=s, A_t=a}
 \end{equation}
+Man möchte natürlich dass die Q-Funktion möglichst präzise die realitätsnahen Werte der Zustand-Aktions Paare wiedergibt. Es erzielt damit die höchsten Belohnungen, wodurch die Richtlinie $\pi$ dann immer optimale Aktionen wählen kann. Eine solche theoretische optimale Q-Funktion wird als $Q^*$ notiert. $Q^*$ folgt eine wichtige Identität: Die Bellman-Gleichung. Es vereinfacht die Berechnung indem es die Funktion in zwei Zeitschritte teilt. Die Bellman-Gleichung formt das komplexe Problem in einfachere \emph{rekursive} Probleme um. Dies hilft bei der Suche nach der optimalen Lösung, welches in diesem Fall $Q^*$ wäre.
+\begin{align} \label{eqn:bellman-eq}
+	Q^*(s,a) &= \CEE{}{R_{t+1} + \gamma \max_{a'}Q^*(S_{t+1}, a')}{S_t=s, A_t=a} \\
+			 &= \sum_{s', r}p(s', r | s, a)[r + \gamma \max_{a'}Q^*(s', a')]
+\end{align}
+
 
 Sowohl die Q-Funktion, als auch die Wertfunktion können abgeschätzt werden. Die einfachste Möglichkeit ist wohl dass man den Durchschnitt für den Q-Wert in einem Spieldurchgang aufnimmt, man also möglichst alle Zustand-Aktion Kombinationen erfährt und so die Q-Funktion in einer Art Tabelle darstellt. Diese Monte Carlo Methoden sind jedoch sehr ineffizient und eher für MDP's geeignet, dessen Aktions- und Zustandsräume klein sind. So wie z.B. in Schere Stein Papier"\cite{Wang2020}.
 
 
 \subsubsection{Deep Q-Learning}
 Einen Ansatz eine Q-Funktion für riesige Zustandsräume zu finden ist der Einsatz von künstlichen neuronalen Netzen (KNN). Besonders durch den Fortschritt im Bereich maschinelles Lernen und der erhöhten Rechenkapazität ist die Nutzung solcher sinnvoller geworden. Wenn ein solches KNN die Q-Funktion abschätzt, wird es als Q-Netzwerk bezeichnet\cite{mnihHumanlevelControlDeep2015b}.
+Es wird Double Q-Learning Algorithmus mit einem neuronalen Netzwerk als Q-Netzwerk von \cite{vanhasseltDeepReinforcementLearning2015}[TODO]
 Aus einem Speicher mit gesammelten Erfahrungen wird ein Tupel entnommen. Der Tupel enthält $(s, a, r, s', flag)$\footnote{s' ist der Zustand nach s. 'flag' ist ein Boolean welches auf ein Episodenende hinweist.}. Aus den Werten kann man ein Zielwert $y_i$ für $Q(s,a)$ berechnen. Hierbei ist $i$ ein Iterationsschritt.
 \begin{align}
-	y_i &= r_i + \gamma * \max_{a'}Q(s', a'; \th_{i-1}) \\
+	y_i &= r_i + \gamma * \max_{a'}Q(s', a'; \theta_{i-1})\nonumber \\
 	y_i &= -1 \nonumber
 \end{align}
 Für den Fall dass eine Episode endet wird der Zielwert anders berechnet\footnote{Im Werk 'Playing Atari with Deep Reinforcement Learning'\cite{mnihHumanlevelControlDeep2015b} wurde $y_i = r_i$ gesetzt falls es ein Episodenende war. Es hat sich aber experimentell erwiesen dass $y_i=-1$ bei Episodenenden schneller und für höhere Punktzahlen verursacht hat. Eine negative Belohnung ist hier eine Bestrafung für ein Spielende und motiviert den Agenten solch einen Zustand zu vermeiden.}. Bemerkenswert ist dass die Parameter fixiert werden wenn der Zielwert berechnet wird. Das ist für die folgende Verlustfunktion von Bedeutung.
 
-Das Q-Netzwerk mit dem Parametervektor $\th_t$ kann durch die Minimierung der Verlustfunktion $L$ trainiert werden, welches sich in jeder Iteration $i$ ändert.
+Das Q-Netzwerk mit dem Parametervektor $\theta_t$ kann durch die Minimierung der Verlustfunktion $L$ trainiert werden, welches sich in jeder Iteration $i$ ändert.
 \begin{equation}
-	L_i(\th_i) = \EE{s,a\sim \rho(\cdot)}{(y_i - Q(s,a;\th_i))^2}
+	L_i(\theta_{i}) = \EE{s,a\sim \rho(\cdot)}{(y_i - Q(s,a;\theta_i))^2}
 \end{equation}
-$\rho(s, a)$ ist eine Wahrscheinlichkeitsverteilung über $s$ und $a$. Die Verteilung bildet sich aus der Häufigkeit von den Zustands-Aktions Paaren in den gesammelten Erfahrungen. Leitet man die Verlustfunktion nach $\th_i$ ab, erhält man den nötigen Gradienten um den Verlust von $\th_i$ zu minimieren. $\mathcal{E}$ ist der Emulator aus dem der Zustand $s'$ gesammelt wird.
+$\rho(s, a)$ ist eine Wahrscheinlichkeitsverteilung über $s$ und $a$. Die Verteilung bildet sich aus der Häufigkeit von den Zustands-Aktions Paaren in den gesammelten Erfahrungen. Leitet man die Verlustfunktion nach $\theta_i$ ab, erhält man den nötigen Gradienten um den Verlust von $\theta_i$ zu minimieren. $\mathcal{E}$ ist der Emulator aus dem der Zustand $s'$ gesammelt wird.
 \begin{equation}
-	\grad_{\th_i}L_i(\th_i) = \EE{s,a\sim \rho(\cdot);s'\sim\mathcal{E}}{(r_i + \gamma \max_{a'}Q(s', a';\th_{i-1}) - Q(s,a;\th_i))\grad_{\th_i}Q(s,a,\th_i)}
+	\grad_{\theta_i}L_i(\theta_i) = \EE{s,a\sim \rho(\cdot);s'\sim\mathcal{E}}{(r_i + \gamma \max_{a'}Q(s', a';\theta_{i-1}) - Q(s,a;\theta_i))\grad_{\theta_i}Q(s,a,\theta_i)}
 \end{equation}
 
+\subsubsection{Soft Actor Critic und PPO}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\subsection{Die Bellmann Gleichungen}
@@ -383,7 +401,6 @@ $\rho(s, a)$ ist eine Wahrscheinlichkeitsverteilung über $s$ und $a$. Die Verte
 
 
 %%%%%%
-\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
