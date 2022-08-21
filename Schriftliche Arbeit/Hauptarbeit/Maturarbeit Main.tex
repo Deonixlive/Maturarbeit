@@ -12,6 +12,7 @@
 \usepackage{parskip}
 \usepackage{todonotes}
 \usepackage{color}
+%\usepackage{svg}
 \usepackage{subcaption}
 \usepackage{hyperref}
 \hypersetup{
@@ -432,13 +433,18 @@ Ein Zustand $s$ aus dem Emulator $\mathcal{E}$ wird zuerst vorbereitet\footnote{
 		\includegraphics[width=\linewidth]{bilder/preprocessor/Breakout_pre.png}
 		\caption{Nach Farbreduktion und Skalierung}
 		\label{fig:Breakout_processed}
-	\end{subfigure}%
+	\end{subfigure}
 \caption{Vergleich der Bilder vor und nach der Bearbeitung}
 \label{figs:vergleich}
 \end{figure}
 
 \subsubsection{Modellarchitektur}
-
+Das neuronale Netzwerk besteht aus zwei verschiedene Schichtarten. Die Eingabe wird zuerst in den faltenden (im Englischen 'convolutional') Schichten bearbeitet. Der Teil des Netzwerkes ist besonders geeignet um bestimmte Merkmale eines Bildes zu extrahieren. Die erste konvolutionelle
+\begin{figure}
+	 \centering
+	\includegraphics[width=\textwidth]{bilder/nn/breakout_nnv1.png}
+	\caption{Schematische Darstellung des Modells}}
+\end{figure}
 
 \subsubsection{Hyperparameter}
 
