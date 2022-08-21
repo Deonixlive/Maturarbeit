@@ -415,7 +415,7 @@ Es wurden zwei Experimente durchgeführt. Eines mit dem modifizierten DQN Algori
 \subsection{Aufbau}
 [Beschreibung im Algorithmus Sektion]
 \subsubsection{Vorverarbeitung}
-Ein Zustand $s$ aus dem Emulator $\mathcal{E}$ wird zuerst vorbereitet\footnote{Es werden ähnliche Schritte zur Vorverarbeitung benutzt wie in \cite{Bellemare_2013} und  bevor es zur Aktionsselektion oder im Zwischenspeicher $\mathcal{D}$ verwendet wird. ALE gibt als Zustand ein RGB Bild (128 Farben) mit den Dimensionen 210 mal 160 aus. Dies mit einer Bildwiederholrate von 60Hz. Die Farbebenen des Bildes werden in 8-Bit\footnote{Der Grauwert wird in signierte 8-Bit Integer gespeichert. Es hat einen Bereich von -128 bis 127. Davon wird aber nur der positive Teil verwendet. Somit sind 128 verschiedene Grauwerte möglich.} Grau stufen umgewandelt. Danach wird das Bild in 84 mal 84 runter skaliert. In diesem Experiment, werden diese Vorbereitungen auf die letzten 4 Bilder angewendet und anschliessend werden durch das 'Bildstapeln' die letzten 4 Bilder zu einem kombiniert. Es gehen hierbei keine wichtigen Informationen durch den Farbverlust und die Skalierung verloren. Diese Schritte reduzieren die Zahl aller Möglichen Zustands-Aktions Werte, welche das Q-Netzwerk lernen muss. Beispielsweise existieren schätzungsweise $210*160*128 \approx 4.3*10^6$ mögliche Zustände für die unverarbeiteten Bilder.\\ Für die verarbeiteten Zustände (ohne Bildstapeln) wäre $|\S|$ etwa $84*84*128 \approx 9*10^5$, eine Reduktion um eine ganze Grössenordnung. Das Bildstapeln ist essentiell, weil dann Informationen über die Richtung beinhaltet sind. Vergleicht man die Abbildungen \ref{fig:Breakout_raw} und \ref{fig:Breakout_processed}, merkt man dass in (a) der Ball nicht sichtbar ist. In (b) ist es sichtbar weil der Ball erst in den späteren Bilder sichtbar ist.
+Ein Zustand $s$ aus dem Emulator $\mathcal{E}$ wird zuerst vorbereitet\footnote{Es werden ähnliche Schritte zur Vorverarbeitung benutzt wie in \cite{Bellemare_2013} und \cite{vanhasseltDeepReinforcementLearning2015}.} bevor es zur Aktionsselektion oder im Zwischenspeicher $\mathcal{D}$ verwendet wird. ALE gibt als Zustand ein RGB Bild (128 Farben) mit den Dimensionen 210 mal 160 aus. Dies mit einer Bildwiederholrate von 60Hz. Die Farbebenen des Bildes werden in 8-Bit\footnote{Der Grauwert wird in signierte 8-Bit Integer gespeichert. Es hat einen Bereich von -128 bis 127. Davon wird aber nur der positive Teil verwendet. Somit sind 128 verschiedene Grauwerte möglich.} Grau stufen umgewandelt. Danach wird das Bild in 84 mal 84 runter skaliert. In diesem Experiment, werden diese Vorbereitungen auf die letzten 4 Bilder angewendet und anschliessend werden durch das 'Bildstapeln' die letzten 4 Bilder zu einem kombiniert. Es gehen hierbei keine wichtigen Informationen durch den Farbverlust und die Skalierung verloren. Diese Schritte reduzieren die Zahl aller Möglichen Zustands-Aktions Werte, welche das Q-Netzwerk lernen muss. Beispielsweise existieren schätzungsweise $210*160*128 \approx 4.3*10^6$ mögliche Zustände für die unverarbeiteten Bilder.\\ Für die verarbeiteten Zustände (ohne Bildstapeln) wäre $|\S|$ etwa $84*84*128 \approx 9*10^5$, eine Reduktion um eine ganze Grössenordnung. Das Bildstapeln ist essentiell, weil dann Informationen über die Richtung beinhaltet sind. Vergleicht man die Abbildungen \ref{fig:Breakout_raw} und \ref{fig:Breakout_processed}, merkt man dass in (a) der Ball nicht sichtbar ist. In (b) ist es existent weil der Ball erst in den späteren Bilder generiert wird.
 
 
 
@@ -437,8 +437,8 @@ Ein Zustand $s$ aus dem Emulator $\mathcal{E}$ wird zuerst vorbereitet\footnote{
 \label{figs:vergleich}
 \end{figure}
 
-
 \subsubsection{Modellarchitektur}
+
 
 \subsubsection{Hyperparameter}
 
