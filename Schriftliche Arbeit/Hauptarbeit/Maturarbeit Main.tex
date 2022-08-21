@@ -439,22 +439,24 @@ Ein Zustand $s$ aus dem Emulator $\mathcal{E}$ wird zuerst vorbereitet\footnote{
 \end{figure}
 
 \subsubsection{Modellarchitektur}
-Das neuronale Netzwerk besteht aus zwei verschiedene Schichtarten. Die Eingabe mit der Form $84*84*4$ wird zuerst in den zweidimensionalen faltenden (im Englischen 'convolutional') Schichten bearbeitet. Der Teil des Netzwerkes ist besonders geeignet um bestimmte Merkmale eines Bildes zu extrahieren\cite{fukushimaNeocognitronSelforganizingNeural1980}\cite{schmidhuberDeepLearningNeural2015}. Die erste faltende Schicht besteht aus 32 Filter, dessen Kernel $8*8$ gross ist und einen Stride von $4*4$ hat. Die zwei folgende Schichten haben 64 Filter, $4*4$ Kernelgrösse mit $2*2$ Stride und $3*3$ Kernel mit $1*1$ Stride jeweils. Alle faltende Schichten besitzen haben noch eine Aktivierungsfunktion bevor sie mit der nächsten Schicht verbunden werden. Für die Aktivierungsfunktion wird 'ReLU' (rectified linear unit) verwendet\cite{HierarchicalNeuralNetworks}. Die andere Schichtart, die sogenannten 'Dense' Schicht\cite{huangDenselyConnectedConvolutional2017}, wird vollständig mit der letzten Faltungsschicht verbunden. Die 'Dense' Schicht besteht aus 512 Neuronen und hat ebenfalls die 'ReLU' Aktivierungsfunktion.
+Das neuronale Netzwerk besteht aus zwei verschiedene Schichtarten(Siehe Abbildung \ref{fig:breakout_nn}). Die Eingabe mit der Form $84*84*4$ wird zuerst in den zweidimensionalen faltenden (im Englischen 'convolutional') Schichten bearbeitet. Der Teil des Netzwerkes ist besonders geeignet um bestimmte Merkmale eines Bildes zu extrahieren\cite{fukushimaNeocognitronSelforganizingNeural1980}\cite{schmidhuberDeepLearningNeural2015}. Die erste faltende Schicht besteht aus 32 Filter, dessen Kernel $8*8$ gross ist und einen Stride von $4*4$ hat. Die zwei folgende Schichten haben 64 Filter, $4*4$ Kernelgrösse mit $2*2$ Stride und $3*3$ Kernel mit $1*1$ Stride jeweils. Alle faltende Schichten besitzen haben noch eine Aktivierungsfunktion bevor sie mit der nächsten Schicht verbunden werden. Für die Aktivierungsfunktion wird 'ReLU' (rectified linear unit) verwendet\cite{HierarchicalNeuralNetworks}. Die andere Schichtart, die sogenannten 'Dense' Schicht\cite{huangDenselyConnectedConvolutional2017}, wird vollständig mit der letzten Faltungsschicht verbunden. Die 'Dense' Schicht besteht aus 512 Neuronen und hat ebenfalls die 'ReLU' Aktivierungsfunktion. Schlussendlich ist die letzte Schicht, mit einer linearen Aktivierungsfunktion und $|\A|$ Neuronen, welche ebenfalls vollständig verbunden werden, die Ausgabe. Die Aktionsmenge muss hierbei diskret sein. Jede Aktion kann somit mit einem Neuron, welches $Q(s, a)$ ausgibt, assoziiert werden. Es wird nicht die Aktion als Eingabe gegeben, weil man sonst $|\A|$ Mal das Netzwerk evaluieren müsste.
 \begin{figure}
 	 \centering
 	\includegraphics[width=\textwidth]{bilder/nn/breakout_nnv1.png}
 	\caption{Schematische Darstellung des Modells}
+	\label{fig:breakout_nn}
 \end{figure}
 
 \subsubsection{Hyperparameter}
-
+\todo{muss noch schön gemacht werden + Quellen}
+gamma=0.99, epsilon=1, epsilon min=0.05, epsilon decay=1e6, replay buffer size=1e5, lr=6.25e-5
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Evaluation}
-
+Als Plattform wurde Rllib wegen der hohen Skalierbarkeit gewählt. \todo{Noch ausführlicher}
 \subsubsection{Auswahl der Spiele}
-
+Folgende Atari Spiele wurden mit der DQN evaluiert:
 \subsubsection{Performance im Vergleich zu anderen Algorithmen}
 
 \subsubsection{Trainingsgeschwindigkeit}
