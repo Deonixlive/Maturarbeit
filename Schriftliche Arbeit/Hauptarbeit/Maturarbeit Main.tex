@@ -439,11 +439,11 @@ Ein Zustand $s$ aus dem Emulator $\mathcal{E}$ wird zuerst vorbereitet\footnote{
 \end{figure}
 
 \subsubsection{Modellarchitektur}
-Das neuronale Netzwerk besteht aus zwei verschiedene Schichtarten. Die Eingabe wird zuerst in den faltenden (im Englischen 'convolutional') Schichten bearbeitet. Der Teil des Netzwerkes ist besonders geeignet um bestimmte Merkmale eines Bildes zu extrahieren. Die erste konvolutionelle
+Das neuronale Netzwerk besteht aus zwei verschiedene Schichtarten. Die Eingabe mit der Form $84*84*4$ wird zuerst in den zweidimensionalen faltenden (im Englischen 'convolutional') Schichten bearbeitet. Der Teil des Netzwerkes ist besonders geeignet um bestimmte Merkmale eines Bildes zu extrahieren\cite{fukushimaNeocognitronSelforganizingNeural1980}\cite{schmidhuberDeepLearningNeural2015}. Die erste faltende Schicht besteht aus 32 Filter, dessen Kernel $8*8$ gross ist und einen Stride von $4*4$ hat. Die zwei folgende Schichten haben 64 Filter, $4*4$ Kernelgrösse mit $2*2$ Stride und $3*3$ Kernel mit $1*1$ Stride jeweils. Alle faltende Schichten besitzen haben noch eine Aktivierungsfunktion bevor sie mit der nächsten Schicht verbunden werden. Für die Aktivierungsfunktion wird 'ReLU' (rectified linear unit) verwendet\cite{HierarchicalNeuralNetworks}. Die andere Schichtart, die sogenannten 'Dense' Schicht\cite{huangDenselyConnectedConvolutional2017}, wird vollständig mit der letzten Faltungsschicht verbunden. Die 'Dense' Schicht besteht aus 512 Neuronen und hat ebenfalls die 'ReLU' Aktivierungsfunktion.
 \begin{figure}
 	 \centering
 	\includegraphics[width=\textwidth]{bilder/nn/breakout_nnv1.png}
-	\caption{Schematische Darstellung des Modells}}
+	\caption{Schematische Darstellung des Modells}
 \end{figure}
 
 \subsubsection{Hyperparameter}
