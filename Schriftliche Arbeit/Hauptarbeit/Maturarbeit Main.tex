@@ -12,7 +12,7 @@
 \usepackage{parskip}
 \usepackage{todonotes}
 \usepackage{color}
-%\usepackage{svg}
+\usepackage{svg}
 \usepackage{subcaption}
 \usepackage{hyperref}
 \hypersetup{
@@ -33,6 +33,10 @@
 \addbibresource{quellen/quellen.bib}
 \addbibresource{quellen/zotero.bib}
 %\addbibresource{quellen/NIPS-2016-deep-exploration-via-bootstrapped-dqn-Bibtex.bib}
+
+%ADD PICTURE AND SVG PATH
+\svgpath{{bilder/}}
+\graphicspath{{bilder/}}
 
 \numberwithin{equation}{section} %Nummeriert mathematische Umgebungen nach sections durch
 \usepackage[nodisplayskipstretch]{setspace} %lässt Abstand zwischen align-Umgebungen und Text auf 1.0
@@ -313,7 +317,7 @@ G_t &= \sum_{k=t+1}^{T} \gamma^{k-t-1}R_k
 \end{align}
 
 Setzt man $\gamma=0$ wird nur die nächste Belohnung berücksichtigt. Es gibt auch die Möglichkeit $T=\infty$ oder $ \gamma=1$, aber nicht beides gleichzeitig. \\
-Tatsächlich können viele Ziele anhand von einem Skalar ausgedrückt werden \cite{Sutton}. In den meisten Fällen ist das Design der Belohnungen leicht, besonders für einfach Probleme. Für komplexere Ziele und Aufgaben kann es sinnvoll sein Unterziele zu definieren. Im bestärkten Lernen ist das Atari Spiel 'Montezuma's revenge' eines der schwierigsten Herausforderungen \cite{montezuma}. Man muss für das Ende des Spiels sehr viele spezifische Aktionen durchführen und bekommt dann erst die Belohnung (Siehe Abbildung \ref{fig:montezuma}).
+Tatsächlich können viele Ziele anhand von einem Skalar ausgedrückt werden \cite{suttonReinforcementLearningIntroduction2018}. In den meisten Fällen ist das Design der Belohnungen leicht, besonders für einfach Probleme. Für komplexere Ziele und Aufgaben kann es sinnvoll sein Unterziele zu definieren. Im bestärkten Lernen ist das Atari Spiel 'Montezuma's revenge' eines der schwierigsten Herausforderungen \cite{montezuma}. Man muss für das Ende des Spiels sehr viele spezifische Aktionen durchführen und bekommt dann erst die Belohnung (Siehe Abbildung \ref{fig:montezuma}).
 %	\begin{figure}
 %		\includegraphics[width=50mm]{bilder/belohnungen/montezumas_revenge.png}
 %		\caption{Montezuma's revenge}
@@ -332,7 +336,7 @@ Tatsächlich können viele Ziele anhand von einem Skalar ausgedrückt werden \ci
 \end{minipage}
 \hspace{1.5mm}
 \begin{minipage}{0.3\textwidth}
-	\includegraphics[width=55mm]{bilder/belohnungen/montezumas_revenge.png} \\*
+	\includegraphics[width=55mm]{belohnungen/montezumas_revenge.png} \\*
 \end{minipage}\hspace{0.1\textwidth}
 \end{figure}
 
@@ -416,21 +420,20 @@ Es wurden zwei Experimente durchgeführt. Eines mit dem modifizierten DQN Algori
 \subsection{Aufbau}
 [Beschreibung im Algorithmus Sektion]
 \subsubsection{Vorverarbeitung}
-Ein Zustand $s$ aus dem Emulator $\mathcal{E}$ wird zuerst vorbereitet\footnote{Es werden ähnliche Schritte zur Vorverarbeitung benutzt wie in \cite{Bellemare_2013} und \cite{vanhasseltDeepReinforcementLearning2015}.} bevor es zur Aktionsselektion oder im Zwischenspeicher $\mathcal{D}$ verwendet wird. ALE gibt als Zustand ein RGB Bild (128 Farben) mit den Dimensionen 210 mal 160 aus. Dies mit einer Bildwiederholrate von 60Hz. Die Farbebenen des Bildes werden in 8-Bit\footnote{Der Grauwert wird in signierte 8-Bit Integer gespeichert. Es hat einen Bereich von -128 bis 127. Davon wird aber nur der positive Teil verwendet. Somit sind 128 verschiedene Grauwerte möglich.} Grau stufen umgewandelt. Danach wird das Bild in 84 mal 84 runter skaliert. In diesem Experiment, werden diese Vorbereitungen auf die letzten 4 Bilder angewendet und anschliessend werden durch das 'Bildstapeln' die letzten 4 Bilder zu einem kombiniert. Es gehen hierbei keine wichtigen Informationen durch den Farbverlust und die Skalierung verloren. Diese Schritte reduzieren die Zahl aller Möglichen Zustands-Aktions Werte, welche das Q-Netzwerk lernen muss. Beispielsweise existieren schätzungsweise $210*160*128 \approx 4.3*10^6$ mögliche Zustände für die unverarbeiteten Bilder.\\ Für die verarbeiteten Zustände (ohne Bildstapeln) wäre $|\S|$ etwa $84*84*128 \approx 9*10^5$, eine Reduktion um eine ganze Grössenordnung. Das Bildstapeln ist essentiell, weil dann Informationen über die Richtung beinhaltet sind. Vergleicht man die Abbildungen \ref{fig:Breakout_raw} und \ref{fig:Breakout_processed}, merkt man dass in (a) der Ball nicht sichtbar ist. In (b) ist es existent weil der Ball erst in den späteren Bilder generiert wird.
-
-
+Ein Zustand $s$ aus dem Emulator $\mathcal{E}$ wird zuerst vorbereitet\footnote{Es werden ähnliche Schritte zur Vorverarbeitung benutzt wie in \cite{Bellemare_2013} und \cite{vanhasseltDeepReinforcementLearning2015}.} bevor es zur Aktionsselektion oder im Zwischenspeicher $\mathcal{D}$ verwendet wird. ALE gibt als Zustand ein RGB Bild (128 Farben) mit den Dimensionen 210 mal 160 aus. Dies mit einer Bildwiederholrate von 60Hz. Die Farbebenen des Bildes werden in 8-Bit\footnote{Der Grauwert wird in signierte 8-Bit Integer gespeichert. Es hat einen Bereich von -128 bis 127. Davon wird aber nur der positive Teil verwendet. Somit sind 128 verschiedene Grauwerte möglich.} Grau stufen umgewandelt. Danach wird das Bild in 84 mal 84 runter skaliert. In diesem Experiment, werden diese Vorbereitungen auf die letzten 4 Bilder angewendet und anschliessend werden durch das 'Bildstapeln' die letzten 4 Bilder zu einem kombiniert. Es gehen hierbei keine wichtigen Informationen durch den Farbverlust und die Skalierung verloren. Diese Schritte reduzieren die Zahl aller Möglichen Zustands-Aktions Werte, welche das Q-Netzwerk lernen muss. Beispielsweise existieren schätzungsweise $210*160*128 \approx 4.3*10^6$ mögliche Zustände für die unverarbeiteten Bilder.\\
+Für die verarbeiteten Zustände (ohne Bildstapeln) wäre $|\S|$ etwa $84*84*128 \approx 9*10^5$, eine Reduktion um eine ganze Grössenordnung. Das Bildstapeln ist essentiell, weil dann Informationen über die Richtung beinhaltet sind. Vergleicht man die Abbildungen \ref{fig:Breakout_raw} und \ref{fig:Breakout_processed}, merkt man dass in (a) der Ball nicht sichtbar ist. In (b) ist es existent weil der Ball erst in den späteren Bilder generiert wird.
 
 \begin{figure}
 	\centering
 	\begin{subfigure}{0.5\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{bilder/preprocessor/Breakout_raw.png}
+		\includegraphics[width=1\linewidth]{preprocessor/Breakout_raw.png}
 		\caption{Originales Bild}
 		\label{fig:Breakout_raw}
 	\end{subfigure}%
 	\begin{subfigure}{0.5\textwidth}
 		\centering
-		\includegraphics[width=\linewidth]{bilder/preprocessor/Breakout_pre.png}
+		\includegraphics[width=1\linewidth]{preprocessor/Breakout_pre.png}
 		\caption{Nach Farbreduktion und Skalierung}
 		\label{fig:Breakout_processed}
 	\end{subfigure}
@@ -442,7 +445,7 @@ Ein Zustand $s$ aus dem Emulator $\mathcal{E}$ wird zuerst vorbereitet\footnote{
 Das neuronale Netzwerk besteht aus zwei verschiedene Schichtarten(Siehe Abbildung \ref{fig:breakout_nn}). Die Eingabe mit der Form $84*84*4$ wird zuerst in den zweidimensionalen faltenden (im Englischen 'convolutional') Schichten bearbeitet. Der Teil des Netzwerkes ist besonders geeignet um bestimmte Merkmale eines Bildes zu extrahieren\cite{fukushimaNeocognitronSelforganizingNeural1980}\cite{schmidhuberDeepLearningNeural2015}. Die erste faltende Schicht besteht aus 32 Filter, dessen Kernel $8*8$ gross ist und einen Stride von $4*4$ hat. Die zwei folgende Schichten haben 64 Filter, $4*4$ Kernelgrösse mit $2*2$ Stride und $3*3$ Kernel mit $1*1$ Stride jeweils. Alle faltende Schichten besitzen haben noch eine Aktivierungsfunktion bevor sie mit der nächsten Schicht verbunden werden. Für die Aktivierungsfunktion wird 'ReLU' (rectified linear unit) verwendet\cite{HierarchicalNeuralNetworks}. Die andere Schichtart, die sogenannten 'Dense' Schicht\cite{huangDenselyConnectedConvolutional2017}, wird vollständig mit der letzten Faltungsschicht verbunden. Die 'Dense' Schicht besteht aus 512 Neuronen und hat ebenfalls die 'ReLU' Aktivierungsfunktion. Schlussendlich ist die letzte Schicht, mit einer linearen Aktivierungsfunktion und $|\A|$ Neuronen, welche ebenfalls vollständig verbunden werden, die Ausgabe. Die Aktionsmenge muss hierbei diskret sein. Jede Aktion kann somit mit einem Neuron, welches $Q(s, a)$ ausgibt, assoziiert werden. Es wird nicht die Aktion als Eingabe gegeben, weil man sonst $|\A|$ Mal das Netzwerk evaluieren müsste.
 \begin{figure}
 	 \centering
-	\includegraphics[width=\textwidth]{bilder/nn/breakout_nnv1.png}
+	\includegraphics[width=\textwidth]{nn/breakoutnn.pdf} %[width=\textwidth]
 	\caption{Schematische Darstellung des Modells}
 	\label{fig:breakout_nn}
 \end{figure}
@@ -456,7 +459,7 @@ gamma=0.99, epsilon=1, epsilon min=0.05, epsilon decay=1e6, replay buffer size=1
 \subsection{Evaluation}
 Als Plattform wurde Rllib wegen der hohen Skalierbarkeit gewählt. \todo{Noch ausführlicher}
 \subsubsection{Auswahl der Spiele}
-Folgende Atari Spiele wurden mit der DQN evaluiert:
+Von den insgesamt 57 verfügbaren Atari Spielen wurden in drei Umgebungen der Algorithmus eingesetzt: Breakout, Space Invaders und MsPacman.
 \subsubsection{Performance im Vergleich zu anderen Algorithmen}
 
 \subsubsection{Trainingsgeschwindigkeit}
@@ -502,6 +505,13 @@ Folgende Atari Spiele wurden mit der DQN evaluiert:
 \addcontentsline{toc}{section}{Anhang B}
 
 \newpage
+
+\section*{Ehrlichkeitserklärung}
+Am Ende der Arbeit muss folgende Erklärung stehen:
+Die eingereichte Arbeit ist das Resultat meiner/unserer persönlichen, selbstständigen Beschäftigung mit dem Thema. Ich habe/wir haben für sie keine anderen Quellen benutzt als die in
+den Verzeichnissen aufgeführten. Sämtliche wörtlich übernommenen Texte (Sätze) sind als Zitate gekennzeichnet.\\
+Ort, Datum Unterschrift(en)
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
