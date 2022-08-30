@@ -15,6 +15,7 @@
 \usepackage{svg}
 \usepackage{subcaption}
 \usepackage{hyperref}
+\usepackage{float}
 \hypersetup{
 	colorlinks=false,
 	linktoc=all
@@ -383,7 +384,7 @@ Einen Ansatz eine Q-Funktion für riesige Zustandsräume zu finden ist der Einsa
 Es wird Double Q-Learning Algorithmus mit einem neuronalen Netzwerk als Q-Netzwerk von \cite{vanhasseltDeepReinforcementLearning2015}[TODO]
 Aus einem Speicher mit gesammelten Erfahrungen wird ein Tupel entnommen. Der Tupel enthält $(s, a, r, s', flag)$\footnote{s' ist der Zustand nach s. 'flag' ist ein Boolean welches auf ein Episodenende hinweist.}. Aus den Werten kann man ein Zielwert $y_i$ für $Q(s,a)$ berechnen. Hierbei ist $i$ ein Iterationsschritt.
 \begin{align}
-	y_i &= r_i + \gamma * \max_{a'}Q(s', a'; \theta_{i-1})\nonumber \\
+	y_i &= r_i + \gamma \cdot \max_{a'}Q(s', a'; \theta_{i-1})\nonumber \\
 	y_i &= -1 \nonumber
 \end{align}
 Für den Fall dass eine Episode endet wird der Zielwert anders berechnet\footnote{Im Werk 'Playing Atari with Deep Reinforcement Learning'\cite{mnihHumanlevelControlDeep2015b} wurde $y_i = r_i$ gesetzt falls es ein Episodenende war. Es hat sich aber experimentell erwiesen dass $y_i=-1$ bei Episodenenden schneller und für höhere Punktzahlen verursacht hat. Eine negative Belohnung ist hier eine Bestrafung für ein Spielende und motiviert den Agenten solch einen Zustand zu vermeiden.}. Bemerkenswert ist dass die Parameter fixiert werden wenn der Zielwert berechnet wird. Das ist für die folgende Verlustfunktion von Bedeutung.
@@ -420,8 +421,8 @@ Es wurden zwei Experimente durchgeführt. Eines mit dem modifizierten DQN Algori
 \subsection{Aufbau}
 [Beschreibung im Algorithmus Sektion]
 \subsubsection{Vorverarbeitung}
-Ein Zustand $s$ aus dem Emulator $\mathcal{E}$ wird zuerst vorbereitet\footnote{Es werden ähnliche Schritte zur Vorverarbeitung benutzt wie in \cite{Bellemare_2013} und \cite{vanhasseltDeepReinforcementLearning2015}.} bevor es zur Aktionsselektion oder im Zwischenspeicher $\mathcal{D}$ verwendet wird. ALE gibt als Zustand ein RGB Bild (128 Farben) mit den Dimensionen 210 mal 160 aus. Dies mit einer Bildwiederholrate von 60Hz. Die Farbebenen des Bildes werden in 8-Bit\footnote{Der Grauwert wird in signierte 8-Bit Integer gespeichert. Es hat einen Bereich von -128 bis 127. Davon wird aber nur der positive Teil verwendet. Somit sind 128 verschiedene Grauwerte möglich.} Grau stufen umgewandelt. Danach wird das Bild in 84 mal 84 runter skaliert. In diesem Experiment, werden diese Vorbereitungen auf die letzten 4 Bilder angewendet und anschliessend werden durch das 'Bildstapeln' die letzten 4 Bilder zu einem kombiniert. Es gehen hierbei keine wichtigen Informationen durch den Farbverlust und die Skalierung verloren. Diese Schritte reduzieren die Zahl aller Möglichen Zustands-Aktions Werte, welche das Q-Netzwerk lernen muss. Beispielsweise existieren schätzungsweise $210*160*128 \approx 4.3*10^6$ mögliche Zustände für die unverarbeiteten Bilder.\\
-Für die verarbeiteten Zustände (ohne Bildstapeln) wäre $|\S|$ etwa $84*84*128 \approx 9*10^5$, eine Reduktion um eine ganze Grössenordnung. Das Bildstapeln ist essentiell, weil dann Informationen über die Richtung beinhaltet sind. Vergleicht man die Abbildungen \ref{fig:Breakout_raw} und \ref{fig:Breakout_processed}, merkt man dass in (a) der Ball nicht sichtbar ist. In (b) ist es existent weil der Ball erst in den späteren Bilder generiert wird.
+Ein Zustand $s$ aus dem Emulator $\mathcal{E}$ wird zuerst vorbereitet\footnote{Es werden ähnliche Schritte zur Vorverarbeitung benutzt wie in \cite{Bellemare_2013} und \cite{vanhasseltDeepReinforcementLearning2015}.} bevor es zur Aktionsselektion oder im Zwischenspeicher $\mathcal{D}$ verwendet wird. ALE gibt als Zustand ein RGB Bild (128 Farben) mit den Dimensionen 210 mal 160 aus. Dies mit einer Bildwiederholrate von 60Hz. Die Farbebenen des Bildes werden in 8-Bit\footnote{Der Grauwert wird in signierte 8-Bit Integer gespeichert. Es hat einen Bereich von -128 bis 127. Davon wird aber nur der positive Teil verwendet. Somit sind 128 verschiedene Grauwerte möglich.} Grau stufen umgewandelt. Danach wird das Bild in 84 mal 84 runter skaliert. In diesem Experiment, werden diese Vorbereitungen auf die letzten 4 Bilder angewendet und anschliessend werden durch das 'Bildstapeln' die letzten 4 Bilder zu einem kombiniert. Es gehen hierbei keine wichtigen Informationen durch den Farbverlust und die Skalierung verloren. Diese Schritte reduzieren die Zahl aller Möglichen Zustands-Aktions Werte, welche das Q-Netzwerk lernen muss. Beispielsweise existieren schätzungsweise $210\cdot160\cdot128 \approx 4.3\cdot10^6$ mögliche Zustände für die unverarbeiteten Bilder.\\
+Für die verarbeiteten Zustände (ohne Bildstapeln) wäre $|\S|$ etwa $84*\cdot84\cdot128 \approx 9\cdot10^5$, eine Reduktion um eine ganze Grössenordnung. Das Bildstapeln ist essentiell, weil dann Informationen über die Richtung beinhaltet sind. Vergleicht man die Abbildungen \ref{fig:Breakout_raw} und \ref{fig:Breakout_processed}, merkt man dass in (a) der Ball nicht sichtbar ist. In (b) ist es existent weil der Ball erst in den späteren Bilder generiert wird.
 
 \begin{figure}
 	\centering
@@ -442,16 +443,20 @@ Für die verarbeiteten Zustände (ohne Bildstapeln) wäre $|\S|$ etwa $84*84*128
 \end{figure}
 
 \subsubsection{Modellarchitektur}
-Das neuronale Netzwerk besteht aus zwei verschiedene Schichtarten(Siehe Abbildung \ref{fig:breakout_nn}). Die Eingabe mit der Form $84*84*4$ wird zuerst in den zweidimensionalen faltenden (im Englischen 'convolutional') Schichten bearbeitet. Der Teil des Netzwerkes ist besonders geeignet um bestimmte Merkmale eines Bildes zu extrahieren\cite{fukushimaNeocognitronSelforganizingNeural1980}\cite{schmidhuberDeepLearningNeural2015}. Die erste faltende Schicht besteht aus 32 Filter, dessen Kernel $8*8$ gross ist und einen Stride von $4*4$ hat. Die zwei folgende Schichten haben 64 Filter, $4*4$ Kernelgrösse mit $2*2$ Stride und $3*3$ Kernel mit $1*1$ Stride jeweils. Alle faltende Schichten besitzen haben noch eine Aktivierungsfunktion bevor sie mit der nächsten Schicht verbunden werden. Für die Aktivierungsfunktion wird 'ReLU' (rectified linear unit) verwendet\cite{HierarchicalNeuralNetworks}. Die andere Schichtart, die sogenannten 'Dense' Schicht\cite{huangDenselyConnectedConvolutional2017}, wird vollständig mit der letzten Faltungsschicht verbunden. Die 'Dense' Schicht besteht aus 512 Neuronen und hat ebenfalls die 'ReLU' Aktivierungsfunktion. Schlussendlich ist die letzte Schicht, mit einer linearen Aktivierungsfunktion und $|\A|$ Neuronen, welche ebenfalls vollständig verbunden werden, die Ausgabe. Die Aktionsmenge muss hierbei diskret sein. Jede Aktion kann somit mit einem Neuron, welches $Q(s, a)$ ausgibt, assoziiert werden. Es wird nicht die Aktion als Eingabe gegeben, weil man sonst $|\A|$ Mal das Netzwerk evaluieren müsste.
-\begin{figure}
-	 \centering
-	\includegraphics[width=\textwidth]{nn/breakoutnn.pdf} %[width=\textwidth]
+
+Das neuronale Netzwerk besteht aus zwei verschiedene Schichtarten(Siehe Abbildung \ref{fig:breakout_nn}). Die Eingabe mit der Form $84\cdot84\cdot4$ wird zuerst in den zweidimensionalen faltenden (im Englischen 'convolutional') Schichten bearbeitet. Der Teil des Netzwerkes ist besonders geeignet um bestimmte Merkmale eines Bildes zu extrahieren\cite{fukushimaNeocognitronSelforganizingNeural1980}\cite{schmidhuberDeepLearningNeural2015}.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{nn/breakout_nn.pdf} %[width=\textwidth]
 	\caption{Schematische Darstellung des Modells}
 	\label{fig:breakout_nn}
 \end{figure}
+Die erste faltende Schicht besteht aus 32 Filter, dessen Kernel $8\cdot8$ gross ist und einen Stride von $4\cdot4$ hat. Die zwei folgende Schichten haben 64 Filter, $4\cdot4$ Kernelgrösse mit $2\cdot2$ Stride und $3\cdot3$ Kernel mit $1\cdot1$ Stride jeweils. Alle faltende Schichten besitzen haben noch eine Aktivierungsfunktion bevor sie mit der nächsten Schicht verbunden werden. Für die Aktivierungsfunktion wird 'ReLU' (rectified linear unit) verwendet\cite{HierarchicalNeuralNetworks}. Die andere Schichtart, die sogenannten 'Dense' Schicht\cite{huangDenselyConnectedConvolutional2017}, wird vollständig mit der letzten Faltungsschicht verbunden. Die 'Dense' Schicht besteht aus 512 Neuronen und hat ebenfalls die 'ReLU' Aktivierungsfunktion. Schlussendlich ist die letzte Schicht die Ausgabe, mit einer linearen Aktivierungsfunktion und $|\A|$ Neuronen, welche ebenfalls vollständig verbunden werden. Die Aktionsmenge muss hierbei diskret sein. Jede Aktion kann somit mit einem Neuron, welches $Q(s, a)$ ausgibt, assoziiert werden. Es wird nicht die Aktion als Eingabe gegeben, weil man sonst $|\A|$ Mal das Netzwerk evaluieren müsste.
 
 \subsubsection{Hyperparameter}
 \todo{muss noch schön gemacht werden + Quellen}
+
+
 gamma=0.99, epsilon=1, epsilon min=0.05, epsilon decay=1e6, replay buffer size=1e5, lr=6.25e-5
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -489,6 +494,14 @@ Von den insgesamt 57 verfügbaren Atari Spielen wurden in drei Umgebungen der Al
 \endgroup
 
 \newpage
+\section*{Ehrlichkeitserklärung}
+Am Ende der Arbeit muss folgende Erklärung stehen:
+Die eingereichte Arbeit ist das Resultat meiner/unserer persönlichen, selbstständigen Beschäftigung mit dem Thema. Ich habe/wir haben für sie keine anderen Quellen benutzt als die in
+den Verzeichnissen aufgeführten. Sämtliche wörtlich übernommenen Texte (Sätze) sind als Zitate gekennzeichnet.\\
+Ort, Datum Unterschrift(en)
+
+\newpage
+
 \section*{Anhang A}
 \pagenumbering{Roman}
 \setcounter{page}{1}
@@ -505,12 +518,6 @@ Von den insgesamt 57 verfügbaren Atari Spielen wurden in drei Umgebungen der Al
 \addcontentsline{toc}{section}{Anhang B}
 
 \newpage
-
-\section*{Ehrlichkeitserklärung}
-Am Ende der Arbeit muss folgende Erklärung stehen:
-Die eingereichte Arbeit ist das Resultat meiner/unserer persönlichen, selbstständigen Beschäftigung mit dem Thema. Ich habe/wir haben für sie keine anderen Quellen benutzt als die in
-den Verzeichnissen aufgeführten. Sämtliche wörtlich übernommenen Texte (Sätze) sind als Zitate gekennzeichnet.\\
-Ort, Datum Unterschrift(en)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
